@@ -1,4 +1,4 @@
-package com.smike.tileStitch.unzoomify;
+package com.smike.tileStitch;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -13,10 +13,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import com.smike.tileStitch.Scraper;
-import com.smike.tileStitch.Tile;
 
-public class ZoomifyScraper extends Scraper {
+public class ZoomifyScraperImpl extends Scraper {
 	private static final String IMAGE_PROPERTIES_NAME = "/ImageProperties.xml";
 	private static final int NUM_TILES_PER_GROUP = 256;
 	
@@ -26,7 +24,7 @@ public class ZoomifyScraper extends Scraper {
 	private String version; //TODO: Not used yet. Check for version compatibility.
 	private int tileSize;
 	
-	public ZoomifyScraper(String baseUrl) throws ParserConfigurationException, SAXException, IOException {
+	public ZoomifyScraperImpl(String baseUrl) throws ParserConfigurationException, SAXException, IOException {
 		super(baseUrl, null);
 		init();
 	}
@@ -63,7 +61,7 @@ public class ZoomifyScraper extends Scraper {
 		return new Dimension(tileSize, tileSize);
 	}
 	
-	private int calculateMaxLevel() {
+	public int calculateMaxLevel() {
 		double maxDimension = Math.max(size.width, size.height);
 		return (int)Math.ceil(Math.log(maxDimension/tileSize)/Math.log(2));
 	}
@@ -115,25 +113,5 @@ public class ZoomifyScraper extends Scraper {
 	public void saveCompleteImage(int level, File outputDir) throws IOException {
 		Dimension dimension = calculateTilesDim(level);
 		super.saveCompleteImage(level, new Point(0, 0), dimension, outputDir);
-	}
-
-	public static void main(String[] args) {
-		try {
-//			ZoomifyScraper zoomifyScraper = new ZoomifyScraper("http://zoomify.com/images/folders/parisSatellite");
-			ZoomifyScraper zoomifyScraper = new ZoomifyScraper("http://digital-vector-maps.com/images_products_tiled/new_york_ny_zipcodes_lg");
-			int maxLevel = zoomifyScraper.calculateMaxLevel();
-			for(int level = 0; level <= maxLevel; level++) {
-				Dimension tilesDimAtLevel = zoomifyScraper.calculateTilesDim(level);
-				Tile maxTile = new Tile(level, tilesDimAtLevel.width - 1, tilesDimAtLevel.height - 1);
-
-				String urlString = zoomifyScraper.constructUrl(maxTile);
-				System.out.println("Scraper.main(): " + urlString);
-			}
-//			File outputDir = new File("output/parisSatellite");
-			File outputDir = new File("output/nyZips");
-			zoomifyScraper.saveCompleteImage(maxLevel, outputDir);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 }
