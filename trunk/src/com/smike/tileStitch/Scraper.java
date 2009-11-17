@@ -102,8 +102,12 @@ public abstract class Scraper {
 				outputBufferedImage.setRGB(getTileSize().width*col, getTileSize().height*row, 
 						width, height, rgbArray, 0, width);
 
-				realTotalSize.width += width;
-				realTotalSize.height += height;
+				if (col == 0) {
+					realTotalSize.height += height;
+				}
+				if (row == 0) {
+					realTotalSize.width += width;
+				}
 			}
 		}
 		BufferedImage trimmedBufferedImage = 
