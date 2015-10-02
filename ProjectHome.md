@@ -1,0 +1,1 @@
+Create a monolithic image from map tiles off of popular tiling servers.
